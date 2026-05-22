@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tienda Innovatech</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1 { color: #333; }
+    #productos { list-style: none; padding: 0; }
+    #productos li { background: #f5f5f5; margin: 8px 0; padding: 12px; border-radius: 6px; }
+    #status { color: green; font-weight: bold; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Tienda Innovatech Chile</h1>
+  <p>Estado backend: <span id="status">verificando...</span></p>
+  <h2>Productos</h2>
+  <ul id="productos"></ul>
+
+  <script>
+	const BACKEND = `http://44.202.74.91:3000`;
+
+    fetch(`${BACKEND}/health`)
+      .then(r => r.json())
+      .then(d => document.getElementById('status').textContent = d.status)
+      .catch(() => {
+        document.getElementById('status').textContent = 'sin conexión';
+        document.getElementById('status').className = 'error';
+      });
+
+    fetch(`${BACKEND}/productos`)
+      .then(r => r.json())
+      .then(productos => {
+        const ul = document.getElementById('productos');
+        productos.forEach(p => {
+          const li = document.createElement('li');
+          li.textContent = `${p.nombre} — $${p.precio}`;
+          ul.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>
